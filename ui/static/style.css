@@ -1,0 +1,38 @@
+body {
+    font-family: Roboto, Helvetica, Verdana, sans-serif;
+}
+
+.wrapper {
+    text-align: center;
+}
+
+.jam-section {
+    background-color: rgba(255, 255, 255, 0.5);
+    padding:10pt;
+    display: inline-block;
+    border-radius: 5pt;
+    margin: 10pt;
+    min-width: 400pt;
+    font-size: 15pt;
+}
+
+.title {
+    font-family: 'Marck Script', cursive;
+    text-align: center;
+    font-size: 40pt;
+}
+
+.no-jam {
+    background-color: #DDE59B;
+    color: #8D954B;
+}
+
+.little-jam {
+    background-color: #F0CA86;
+    color: #A07A36;
+}
+
+.much-jam {
+    background-color: #FDAEA9;
+    color: #9D5E59;
+}

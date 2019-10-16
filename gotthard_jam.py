@@ -9,8 +9,8 @@ from direction import Direction
 def _get_jam_from_tweet_match(tweet, match, direction):
     tweet_time = datetime.strptime(tweet.created_at, "%a %b %d %H:%M:%S %z %Y")
     # If tweet is older than 2 hours, it's probably outdated
-    if (datetime.utcnow() - tweet_time.replace(tzinfo=None)).total_seconds() > 5200:
-        return {}
+    #if (datetime.utcnow() - tweet_time.replace(tzinfo=None)).total_seconds() > 5200:
+        #return {}
     jam_length_kilometers = match.groups()[1]
     waiting_time = match.groups()[2]
     waiting_time_unit = match.groups()[3]
@@ -43,7 +43,7 @@ class GotthardJam(object):
             self.api = twitter.Api(api_consumer_key, api_consumer_secret, api_access_token_key, api_access_token_secret)
 
     def get_gotthard_jam(self):
-        gotthard_tweets = self.api.GetUserTimeline(screen_name="TCSGotthard", count=30, exclude_replies=True)
+        gotthard_tweets = self.api.GetUserTimeline(screen_name="TCSGotthard", count=10, exclude_replies=True)
         south_jam = {}
         north_jam = {}
 
@@ -59,7 +59,14 @@ class GotthardJam(object):
                 elif not north_jam and direction == Direction.NORTH:
                     north_jam = _get_jam_from_tweet_match(tweet, match, direction)
 
+        total_jam_minutes = 0
+        if south_jam:
+            total_jam_minutes = int(south_jam["waiting_time_minutes"])
+        if north_jam:
+            total_jam_minutes += int(north_jam["waiting_time_minutes"])
+
         return {
             "north": north_jam,
-            "south": south_jam
+            "south": south_jam,
+            "body_class": "no-jam" if total_jam_minutes <= 10 else ("little-jam" if total_jam_minutes <= 30 else "much-jam")
         }
