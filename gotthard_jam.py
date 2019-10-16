@@ -9,8 +9,8 @@ from direction import Direction
 def _get_jam_from_tweet_match(tweet, match, direction):
     tweet_time = datetime.strptime(tweet.created_at, "%a %b %d %H:%M:%S %z %Y")
     # If tweet is older than 2 hours, it's probably outdated
-    #if (datetime.utcnow() - tweet_time.replace(tzinfo=None)).total_seconds() > 5200:
-        #return {}
+    if (datetime.utcnow() - tweet_time.replace(tzinfo=None)).total_seconds() > 5200:
+        return {}
     jam_length_kilometers = match.groups()[1]
     waiting_time = match.groups()[2]
     waiting_time_unit = match.groups()[3]
