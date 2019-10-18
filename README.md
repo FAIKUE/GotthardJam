@@ -1,6 +1,6 @@
 ## GotthardJam
 
-Gets the current traffic jam at Gotthard Road Tunnel from @TCSGotthard's tweets.
+Gets the current traffic jam at Gotthard Road Tunnel from @TCSGotthard's tweets and displays it neatly on a slim website.
 
 ### Config
 Create an api_config.yaml file in the execution directory with the following scheme to use the twitter api:
