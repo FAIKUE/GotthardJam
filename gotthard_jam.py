@@ -2,34 +2,8 @@ import twitter
 import re
 import yaml
 
-from datetime import datetime, timezone
+from datetime import datetime
 from direction import Direction
-
-
-def _get_jam_from_tweet_match(tweet, match, direction):
-    tweet_time = datetime.strptime(tweet.created_at, "%a %b %d %H:%M:%S %z %Y")
-    # If tweet is older than 2 hours, it's probably outdated
-    if (datetime.utcnow() - tweet_time.replace(tzinfo=None)).total_seconds() > 5200:
-        return {}
-    jam_length_kilometers = match.groups()[1]
-    waiting_time = match.groups()[2]
-    waiting_time_unit = match.groups()[3]
-
-    if waiting_time_unit == "Minuten":
-        waiting_time_hours = int(waiting_time) / 60
-        waiting_time_minutes = waiting_time
-    else:
-        waiting_time_minutes = int(waiting_time) * 60
-        waiting_time_hours = waiting_time
-
-    jam = {
-        "time": f"{tweet_time:%d.%m.%Y %H:%M}",
-        "length_kilometers": jam_length_kilometers,
-        "direction": str(direction),
-        "waiting_time_minutes": waiting_time_minutes,
-        "waiting_time_hours": waiting_time_hours
-    }
-    return jam
 
 
 class GotthardJam(object):
@@ -55,9 +29,9 @@ class GotthardJam(object):
             if match is not None:
                 direction = Direction.SOUTH if match.groups()[0] == "Luzern" else Direction.NORTH
                 if not south_jam and direction == Direction.SOUTH:
-                    south_jam = _get_jam_from_tweet_match(tweet, match, direction)
+                    south_jam = GotthardJam._get_jam_from_tweet_match(tweet, match, direction)
                 elif not north_jam and direction == Direction.NORTH:
-                    north_jam = _get_jam_from_tweet_match(tweet, match, direction)
+                    north_jam = GotthardJam._get_jam_from_tweet_match(tweet, match, direction)
 
         total_jam_minutes = 0
         if south_jam:
@@ -70,3 +44,29 @@ class GotthardJam(object):
             "south": south_jam,
             "body_class": "no-jam" if total_jam_minutes <= 10 else ("little-jam" if total_jam_minutes <= 30 else "much-jam")
         }
+
+    @staticmethod
+    def _get_jam_from_tweet_match(tweet, match, direction):
+        tweet_time = datetime.strptime(tweet.created_at, "%a %b %d %H:%M:%S %z %Y")
+        # If tweet is older than 2 hours, it's probably outdated
+        if (datetime.utcnow() - tweet_time.replace(tzinfo=None)).total_seconds() > 5200:
+            return {}
+        jam_length_kilometers = match.groups()[1]
+        waiting_time = match.groups()[2]
+        waiting_time_unit = match.groups()[3]
+
+        if waiting_time_unit == "Minuten":
+            waiting_time_hours = int(waiting_time) / 60
+            waiting_time_minutes = waiting_time
+        else:
+            waiting_time_minutes = int(waiting_time) * 60
+            waiting_time_hours = waiting_time
+
+        jam = {
+            "time": f"{tweet_time:%d.%m.%Y %H:%M}",
+            "length_kilometers": jam_length_kilometers,
+            "direction": str(direction),
+            "waiting_time_minutes": waiting_time_minutes,
+            "waiting_time_hours": waiting_time_hours
+        }
+        return jam

@@ -1,3 +1,4 @@
 api_config.yaml
 .idea/
 __pycache__/
+venv/
