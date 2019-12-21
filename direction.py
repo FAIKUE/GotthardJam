@@ -2,11 +2,11 @@ from enum import Enum
 
 
 class Direction(Enum):
-    NORTH = 1
-    SOUTH = 2
+    north = 1
+    south = 2
 
     def __str__(self):
-        if self == self.NORTH:
+        if self == Direction.north:
             return "Norden"
         else:
             return "Süden"

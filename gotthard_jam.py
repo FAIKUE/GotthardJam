@@ -5,6 +5,8 @@ import yaml
 from datetime import datetime
 from direction import Direction
 
+TWEET_THRESHOLD_HOURS = 3
+
 
 class GotthardJam(object):
     def __init__(self, api_config_path):
@@ -27,10 +29,11 @@ class GotthardJam(object):
                 match = re.match(config["tweet_regex"], tweet.text)
             print(tweet.text)
             if match is not None:
-                direction = Direction.SOUTH if match.groups()[0] == "Luzern" else Direction.NORTH
-                if not south_jam and direction == Direction.SOUTH:
+                place = match.groups()[0]
+                direction = Direction.south if place == "Luzern" else Direction.north
+                if not south_jam and direction == Direction.south:
                     south_jam = GotthardJam._get_jam_from_tweet_match(tweet, match, direction)
-                elif not north_jam and direction == Direction.NORTH:
+                elif not north_jam and direction == Direction.north:
                     north_jam = GotthardJam._get_jam_from_tweet_match(tweet, match, direction)
 
         total_jam_minutes = 0
@@ -48,8 +51,8 @@ class GotthardJam(object):
     @staticmethod
     def _get_jam_from_tweet_match(tweet, match, direction):
         tweet_time = datetime.strptime(tweet.created_at, "%a %b %d %H:%M:%S %z %Y")
-        # If tweet is older than 2 hours, it's probably outdated
-        if (datetime.utcnow() - tweet_time.replace(tzinfo=None)).total_seconds() > 5200:
+        # If tweet is older than 3 hours, it's probably outdated
+        if (datetime.utcnow() - tweet_time.replace(tzinfo=None)).total_seconds() > TWEET_THRESHOLD_HOURS * 3600:
             return {}
         jam_length_kilometers = match.groups()[1]
         waiting_time = match.groups()[2]
@@ -63,7 +66,7 @@ class GotthardJam(object):
             waiting_time_hours = waiting_time
 
         jam = {
-            "time": f"{tweet_time:%d.%m.%Y %H:%M}",
+            "time": tweet_time.strftime("%d.%m.%Y %H:%M"),
             "length_kilometers": jam_length_kilometers,
             "direction": str(direction),
             "waiting_time_minutes": waiting_time_minutes,
