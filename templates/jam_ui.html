@@ -16,6 +16,7 @@
             <h2><i class="fas fa-compass"></i> S</h2>
             <h2>{{ jams.south.length_kilometers }} km Stau in Richtung Süden</h2>
             <h3><i class="fas fa-clock"></i> {{ jams.south.waiting_time_minutes }} min Wartezeit</h3>
+            <h3>{{ jams.south.age_minutes > 60 if "vor {} Stunden".format(jams.south.age_minutes/60) else "vor {} Minuten".format(jams.south.age_minutes) }}</h3>
         </div>
       {% endif %}
       {% if jams.north %}
@@ -23,11 +24,12 @@
             <h2><i class="fas fa-compass"></i> N</h2>
             <h2>{{ jams.north.length_kilometers }} km Stau in Richtung Norden</h2>
             <h3><i class="fas fa-clock"></i> {{ jams.north.waiting_time_minutes }} min Wartezeit</h3>
+            <h3>{{ jams.north.age_minutes > 60 if "vor {} Stunden".format(jams.north.age_minutes/60) else "vor {} Minuten".format(jams.north.age_minutes) }}</h3>
         </div>
       {% endif %}
       {% if not jams.north and not jams.south %}
         <div class="jam-section">
-            <h2>Kein Stau am Gotthard 😁</h2>
+            <h2>Kein Stau am Gotthard 😊</h2>
         </div>
       {% endif %}
     </div>

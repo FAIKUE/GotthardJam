@@ -12,3 +12,8 @@ class Direction(Enum):
             return "Norden"
         else:
             return "Süden"
+
+    @staticmethod
+    def get_direction_from_city(city):
+        """Returns the direction in which the tunnel is impaired by the city given by tcs as destination."""
+        return Direction.south if city is "Luzern" else Direction.north

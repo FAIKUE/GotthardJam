@@ -7,7 +7,7 @@ import yaml
 from datetime import datetime
 from direction import Direction
 
-TWEET_THRESHOLD_HOURS = 3
+TWEET_THRESHOLD_HOURS = 4
 
 
 class GotthardJam(object):
@@ -20,19 +20,19 @@ class GotthardJam(object):
             api_access_token_secret = config["access_token_secret"]
             self.api = twitter.Api(api_consumer_key, api_consumer_secret, api_access_token_key, api_access_token_secret)
 
-    def get_gotthard_jam(self):
+    def get_gotthard_jam(self, config_path):
         gotthard_tweets = self.api.GetUserTimeline(screen_name="TCSGotthard", count=10, exclude_replies=True)
         south_jam = {}
         north_jam = {}
 
         for tweet in gotthard_tweets:
-            with open("config.yaml", "r") as yaml_file:
+            with open(config_path, "r") as yaml_file:
                 config = yaml.safe_load(yaml_file)
                 match = re.match(config["tweet_regex"], tweet.text)
             print(tweet.text)
             if match is not None:
-                place = match.groups()[0]
-                direction = Direction.south if place == "Luzern" else Direction.north
+                city = match.groups()[0]
+                direction = Direction.get_direction_from_city(city)
                 if not south_jam and direction == Direction.south:
                     south_jam = GotthardJam._get_jam_from_tweet_match(tweet, match, direction)
                 elif not north_jam and direction == Direction.north:
@@ -53,6 +53,7 @@ class GotthardJam(object):
     @staticmethod
     def _get_jam_from_tweet_match(tweet, match, direction):
         tweet_time = datetime.strptime(tweet.created_at, "%a %b %d %H:%M:%S %z %Y")
+        age_minutes = (datetime.now() - tweet_time).total_seconds()/60
         # If tweet is older than 3 hours, it's probably outdated
         if (datetime.utcnow() - tweet_time.replace(tzinfo=None)).total_seconds() > TWEET_THRESHOLD_HOURS * 3600:
             return {}
@@ -69,6 +70,7 @@ class GotthardJam(object):
 
         jam = {
             "time": tweet_time.strftime("%d.%m.%Y %H:%M"),
+            "age_minutes": age_minutes,
             "length_kilometers": jam_length_kilometers,
             "direction": str(direction),
             "waiting_time_minutes": waiting_time_minutes,
