@@ -23,6 +23,18 @@ body {
     font-size: 40pt;
 }
 
+.info-title {
+    font-family: 'Marck Script', cursive;
+    text-align: center;
+    font-size: 30pt;
+}
+
+.age {
+    padding: 0 0 10pt 0;
+    font-size: 12pt;
+    font-style: italic;
+}
+
 .no-jam {
     background-color: #DDE59B;
     color: #8D954B;
@@ -41,7 +53,7 @@ body {
 .footer {
     position: fixed;
     left: 0;
-    bottom: 10pt;
+    bottom: 0;
     width: 100%;
     text-align: center;
     padding: 10pt 0;
