@@ -1,2 +1,3 @@
 # Regex that gets the information out of the @TCSGotthard tweets
-tweet_regex: .*?- (.*?) -&gt; Gotthard.*?(\d*) km Stau.*?(\d*) (Stunden|Minuten)
+tweet_jam_regex: .*?- (.*?) Richtung Gotthard.*?(\d*) km Stau.*?(\d*) (Stunden|Minuten)
+tweet_info_regex: "#A2 - (.*)"
