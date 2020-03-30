@@ -38,6 +38,19 @@ body {
     color: #9D5E59;
 }
 
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 10pt;
+    width: 100%;
+    text-align: center;
+    padding: 10pt 0;
+}
+
+.footer>iframe {
+    vertical-align: middle;
+}
+
 @media only screen and (max-width: 600px) {
     .jam-section {
         min-width: 0;
