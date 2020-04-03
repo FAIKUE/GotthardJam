@@ -13,11 +13,25 @@
 <body class="{{ jams.body_class }}">
     <h1 class="title">Wie viel Stau hat es am Gotthard-Tunnel?</h1>
     <div class="wrapper">
+        {% if jams.closed|length %}
+            <div class="jam-section">
+                <h2>{{ jams.closed.text }}</h2>
+                {% if jams.closed.age_minutes > 60 %}
+                    <p class="age">{{ "vor {:.0f} Stunden".format(jams.closed.age_minutes/60) }}</p>
+                {% else %}
+                    <p class="age">{{ "vor {:.0f} Minuten".format(jams.closed.age_minutes) }}</p>
+                {% endif %}
+            </div>
+        {% endif %}
         {% if jams.south %}
             <div class="jam-section">
                 <h2><i class="fas fa-compass"></i> S</h2>
-                <h2>{{ jams.south.length_kilometers }} km Stau in Richtung Süden</h2>
-                <h3><i class="fas fa-clock"></i> {{ jams.south.waiting_time_minutes }} min Wartezeit</h3>
+                {% if jams.south.closed is defined %}
+                    <h2>{{ jams.south.closed }}</h2>
+                {% else %}
+                    <h2>{{ jams.south.length_kilometers }} km Stau in Richtung Süden</h2>
+                    <h3><i class="fas fa-clock"></i> {{ jams.south.waiting_time_minutes }} min Wartezeit</h3>
+                {% endif %}
                 {% if jams.south.age_minutes > 60 %}
                     <p class="age">{{ "vor {:.0f} Stunden".format(jams.south.age_minutes/60) }}</p>
                 {% else %}
@@ -28,8 +42,12 @@
         {% if jams.north %}
             <div class="jam-section">
                 <h2><i class="fas fa-compass"></i> N</h2>
-                <h2>{{ jams.north.length_kilometers }} km Stau in Richtung Norden</h2>
-                <h3><i class="fas fa-clock"></i> {{ jams.north.waiting_time_minutes }} min Wartezeit</h3>
+                {% if jams.north.closed is defined %}
+                    <h2>{{ jams.north.closed.text }}</h2>
+                {% else %}
+                    <h2>{{ jams.north.length_kilometers }} km Stau in Richtung Norden</h2>
+                    <h3><i class="fas fa-clock"></i> {{ jams.north.waiting_time_minutes }} min Wartezeit</h3>
+                {% endif %}
                 {% if jams.north.age_minutes > 60 %}
                     <p class="age">{{ "vor {:.0f} Stunden".format(jams.north.age_minutes/60) }}</p>
                 {% else %}
@@ -37,7 +55,7 @@
                 {% endif %}
             </div>
         {% endif %}
-        {% if not jams.north and not jams.south %}
+        {% if not jams.north and not jams.south and not jams.closed %}
             <div class="jam-section">
                 <h2>Kein Stau am Gotthard 😊</h2>
             </div>
