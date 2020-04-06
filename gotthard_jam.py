@@ -123,5 +123,5 @@ class GotthardJam(object):
     @staticmethod
     def _get_tweet_age_minutes(tweet_time):
         tweet_time = tweet_time.replace(tzinfo=None)
-        return (datetime.now() - tweet_time).total_seconds()/60
+        return (datetime.utcnow() - tweet_time).total_seconds()/60
 
